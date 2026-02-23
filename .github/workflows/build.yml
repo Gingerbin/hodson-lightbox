@@ -10,8 +10,9 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.13'
-      - run: pip install pygame nuitka ordered-set zstandard pefile
-      - run: python -m nuitka --standalone --onefile --windows-console-mode=disable --windows-company-name=YourStudio --windows-product-name=HodsonLightbox --windows-file-version=1.0.0 --windows-product-version=1.0.0 --file-description=HodsonLightBox --copyright=2026 --lto=yes --jobs=2 --experimental=use-pefile --disable-dll-dependency-cache --windows-icon-from-ico=icon.ico --include-data-files=scores.json=scores.json --include-data-files=shop.json=shop.json --output-filename=HodsonLightbox lightbox.py
+      - run: pip install pygame nuitka ordered-set zstandard
+      - run: |
+          echo y | python -m nuitka --standalone --onefile --windows-console-mode=disable --windows-company-name=YourStudio --windows-product-name=HodsonLightbox --windows-file-version=1.0.0 --windows-product-version=1.0.0 --file-description=HodsonLightBox --copyright=2026 --lto=yes --jobs=2 --windows-icon-from-ico=icon.ico --include-data-files=scores.json=scores.json --include-data-files=shop.json=shop.json --output-filename=HodsonLightbox lightbox.py
       - uses: actions/upload-artifact@v4
         with:
           name: HodsonLightbox-Windows
