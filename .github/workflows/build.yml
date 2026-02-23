@@ -1,3 +1,5 @@
+cd C:\Build\Lightbox
+@'
 name: Build Cross-Platform
 
 on: [push, workflow_dispatch]
@@ -18,7 +20,7 @@ jobs:
         name: HodsonLightbox-Windows
         path: HodsonLightbox.exe
 
-   build-macos:
+  build-macos:
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v4
@@ -27,29 +29,17 @@ jobs:
         python-version: '3.13'
     - run: pip install pygame nuitka ordered-set zstandard
     - run: |
-        python -m nuitka \
-          --standalone \
-          --macos-disable-console \
-          --macos-app-name=HodsonLightbox \
-          --macos-app-version=1.0.0 \
-          --macos-create-app-bundle \
-          --lto=yes \
-          --jobs=2 \
-          --include-data-files=scores.json=scores.json \
-          --include-data-files=shop.json=shop.json \
-          --output-filename=HodsonLightbox \
-          lightbox.py
+        python -m nuitka --standalone --macos-disable-console --macos-app-name=HodsonLightbox --macos-app-version=1.0.0 --macos-create-app-bundle --lto=yes --jobs=2 --include-data-files=scores.json=scores.json --include-data-files=shop.json=shop.json --output-filename=HodsonLightbox lightbox.py
     - name: Create DMG
       run: |
         brew install create-dmg
-        create-dmg \
-          --volname "HodsonLightbox" \
-          --window-size 600 400 \
-          --icon-size 100 \
-          --app-drop-link 450 185 \
-          HodsonLightbox.dmg \
-          HodsonLightbox.app
+        create-dmg --volname "HodsonLightbox" --window-size 600 400 --icon-size 100 --app-drop-link 450 185 HodsonLightbox.dmg HodsonLightbox.app
     - uses: actions/upload-artifact@v4
       with:
         name: HodsonLightbox-macOS
         path: HodsonLightbox.dmg
+'@ | Out-File -Encoding utf8 .github/workflows/build.yml
+
+git add .github/workflows/build.yml
+git commit -m "Fix YAML syntax"
+git push
