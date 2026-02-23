@@ -1,5 +1,3 @@
-cd C:\Build\Lightbox
-@'
 name: Build Cross-Platform
 
 on: [push, workflow_dispatch]
@@ -38,8 +36,3 @@ jobs:
       with:
         name: HodsonLightbox-macOS
         path: HodsonLightbox.dmg
-'@ | Out-File -Encoding utf8 .github/workflows/build.yml
-
-git add .github/workflows/build.yml
-git commit -m "Fix YAML syntax"
-git push
