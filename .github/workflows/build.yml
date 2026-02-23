@@ -1,0 +1,38 @@
+name: Build Cross-Platform
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    - run: pip install pygame nuitka ordered-set zstandard
+    - run: |
+        python -m nuitka --standalone --onefile --windows-console-mode=disable --windows-company-name=YourStudio --windows-product-name=HodsonLightbox --windows-file-version=1.0.0 --windows-product-version=1.0.0 --file-description=HodsonLightBox --copyright=2026 --lto=yes --jobs=2 --windows-icon-from-ico=icon.ico --include-data-files=scores.json=scores.json --include-data-files=shop.json=shop.json --output-filename=HodsonLightbox lightbox.py
+    - uses: actions/upload-artifact@v3
+      with:
+        name: HodsonLightbox-Windows
+        path: HodsonLightbox.exe
+
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.13'
+    - run: pip install pygame nuitka ordered-set zstandard
+    - run: |
+        python -m nuitka --standalone --macos-disable-console --macos-app-name=HodsonLightbox --macos-app-version=1.0.0 --macos-signed-app --macos-create-app-bundle --lto=yes --jobs=2 --include-data-files=scores.json=scores.json --include-data-files=shop.json=shop.json --output-filename=HodsonLightbox lightbox.py
+    - name: Create DMG
+      run: |
+        brew install create-dmg
+        create-dmg --volname "HodsonLightbox" --window-size 600 400 --icon-size 100 --app-drop-link 450 185 HodsonLightbox.dmg HodsonLightbox.app
+    - uses: actions/upload-artifact@v3
+      with:
+        name: HodsonLightbox-macOS
+        path: HodsonLightbox.dmg
